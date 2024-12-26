@@ -1,13 +1,22 @@
+import * as vscode from 'vscode';
 import { exec } from "child_process";
-import { ExtensionContext, workspace, commands, window, SnippetString } from "vscode";
+import { CustomBuildTaskProvider } from './customTaskProvider';
 
-export function activate(context: ExtensionContext) {
-  const settings = workspace.getConfiguration('rpmspecChangelog');
+let customTaskProvider: vscode.Disposable | undefined;
 
-  let disposable = commands.registerTextEditorCommand(
+export function activate(context: vscode.ExtensionContext) {
+  const settings = vscode.workspace.getConfiguration('rpmspecChangelog');
+  const workspaceRoot = (vscode.workspace.workspaceFolders && (vscode.workspace.workspaceFolders.length > 0))
+    ? vscode.workspace.workspaceFolders[0].uri.fsPath : undefined;
+  if (!workspaceRoot) {
+    return;
+  }
+  customTaskProvider = vscode.tasks.registerTaskProvider(CustomBuildTaskProvider.CustomBuildScriptType, new CustomBuildTaskProvider(workspaceRoot));
+
+  let disposable = vscode.commands.registerTextEditorCommand(
     "extension.insertRPMSpecChangelog",
     async () => {
-      const currentDocument = window.activeTextEditor;
+      const currentDocument = vscode.window.activeTextEditor;
 
       if (!currentDocument) {
         return;
@@ -29,7 +38,7 @@ export function activate(context: ExtensionContext) {
       console.log(curdate);
       console.log(settings.get('obtainNameAndEmailFromGit'));
 
-      const snippet = new SnippetString("* " + curdate);
+      const snippet = new vscode.SnippetString("* " + curdate);
 
       var email, name;
 
@@ -73,4 +82,10 @@ export function activate(context: ExtensionContext) {
   );
 
   context.subscriptions.push(disposable);
+}
+
+export function deactivate(): void {
+  if (customTaskProvider) {
+    customTaskProvider.dispose();
+  }
 }

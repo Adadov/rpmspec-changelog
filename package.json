@@ -18,7 +18,9 @@
 		"Snippets",
 		"Other"
 	],
-	"activationEvents": [],
+	"activationEvents": [
+		"onCommand:workbench.action.tasks.runTask"
+	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
@@ -43,7 +45,26 @@
 					"scope": "resource"
 				}
 			}
-		}
+		},
+		"inputs": [
+			{
+				"id": "fversion",
+				"description": "Version number ?",
+				"default": "41",
+				"type": "promptString"
+			}
+		],
+		"taskDefinitions": [
+			{
+				"type": "custombuildscript",
+				"properties": {
+					"fversion": {
+						"type": "string",
+						"description": "Fedora Version"
+					}
+				}
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
