@@ -2,7 +2,7 @@
 	"name": "rpmspec-changelog",
 	"displayName": "RPMSpec Changelog",
 	"description": "Inserts a properly formatted changelog line to your RPM spec file for you.",
-	"version": "1.2.0",
+	"version": "1.3.0",
 	"publisher": "adadov",
 	"repository": {
 		"type": "https",
