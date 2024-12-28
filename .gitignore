@@ -4,3 +4,4 @@ node_modules
 *.vsix
 extension/
 *Content_Types*
+.tokens
