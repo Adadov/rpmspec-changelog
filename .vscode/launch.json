@@ -15,7 +15,7 @@
 			],
 			"sourceMaps": true,
 			"smartStep": true,
-			"preLaunchTask": "npm: compile",
+			"preLaunchTask": "npm: dev",
 			"env": {
 				"VSCODE_GO_IN_TEST": "" // Enable code
 			},
