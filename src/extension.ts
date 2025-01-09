@@ -23,7 +23,8 @@ export function activate(context: ExtensionContext) {
     return;
   }
 
-  workspace.findFiles('./mock.cfg').then((uri) => { mockBuildTaskProvider.mockFile = uri.toString(); });
+  let promise = workspace.findFiles('mock.cfg');
+  promise.then((uri) => { if (uri.length > 0) { return mockBuildTaskProvider.mockFile = uri[0].path; } });
 
   mockTaskProvider = tasks.registerTaskProvider(mockBuildTaskProvider.mockBuildScriptType, new mockBuildTaskProvider(workspaceRoot));
   context.subscriptions.push(mockTaskProvider);
