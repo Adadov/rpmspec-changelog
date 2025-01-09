@@ -1,19 +1,22 @@
-# RPMSpec Changelog
+# Changelog
+
+*Changelog created using the [Simple Changelog](https://marketplace.visualstudio.com/items?itemName=tobiaswaelde.vscode-simple-changelog) extension for VS Code.*
+
+## [1.4] - 2025-01-09
+### Added
+- Add runMock command
+
+### Changed
+- Split extension.js file
+
 
 ## [1.3] - 2024-12-27
 
-- Add mock build task
-- Improve changelog insertion: Snippet is automaticaly inserted right after %changelog
 
 ## [1.2]
 
-- Improve user and mail definition
 
 ## [1.1]
 
-- Force english locale for Date
-- Improve version detection using rpmspec utility
 
 ## [1.0]
-
-- Initial release
