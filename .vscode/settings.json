@@ -7,12 +7,5 @@
 		"out": true // set this to false to include "out" folder in search results
 	},
 	// Turn off tsc task auto detection since we have the necessary tasks as npm scripts
-	"typescript.tsc.autoDetect": "off",
-	"rpmspecChangelog.mockOses": [
-		"fedora-40-x86_64",
-		"fedora-41-x86_64",
-		"fedora-42-x86_64",
-		"alma+epel-8-x86_64",
-		"alma+epel-9-x86_64",
-	]
+	"typescript.tsc.autoDetect": "off"
 }
