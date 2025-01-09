@@ -36,10 +36,10 @@
 				"title": "RPM: Run mock for ..."
 			}
 		],
-"configurationDefaults": {},
+		"configurationDefaults": {},
 		"configuration": {
 			"title": "RPMSpec Changelog",
-"displayName": "SPEC Snippets & Mock",
+			"displayName": "SPEC Snippets & Mock",
 			"properties": {
 				"rpmspecChangelog.maintainerName": {
 					"title": "Maintainer name",
@@ -55,7 +55,7 @@
 					"scope": "resource"
 				},
 				"rpmspecChangelog.logDebug": {
-"order": 3,
+					"order": 3,
 					"type": "boolean",
 					"description": "Show more logs",
 					"default": false,
@@ -67,7 +67,7 @@
 					"items": {
 						"type": "string"
 					},
-"default": [
+					"default": [
 						"fedora-40-x86_64",
 						"fedora-41-x86_64",
 						"fedora-42-x86_64",
@@ -79,7 +79,7 @@
 					"scope": "resource"
 				},
 				"mock.showAllProfils": {
-"order": 5,
+					"order": 5,
 					"type": "boolean",
 					"description": "All to run mock for all OS at once",
 					"default": true,
@@ -109,7 +109,7 @@
 			{
 				"type": "RPM",
 				"properties": {
-										"download": {
+					"download": {
 						"type": "boolean",
 						"default": false,
 						"description": "Download sources"
@@ -130,20 +130,18 @@
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"vscode:publish": "vsce package && eval $([ -e .tokens ] && cat .tokens); export VSCE_PAT; vsce publish",
-		"compile": "tsc -p ./",
+		"compile": "tsc -b --sourceMap true --clean && tsc -p ./",
 		"lint": "eslint -c .eslintrc.json src/*.ts",
-		"watch": "tsc -watch -p ./",
+		"watch": "tsc -watch --sourceMap true -p ./",
+		"dev": "tsc --sourceMap true -p ./",
 		"pretest": "npm run compile && npm run lint"
 	},
-	"extensionDependencies": [
-		"rvsmartporting.rpm-spec-ext"
-	],
 	"devDependencies": {
-		"@types/node": "^18.19.68",
-		"@types/vscode": "^1.96.0",
-		"@typescript-eslint/eslint-plugin": "^8.18.2",
-		"@typescript-eslint/parser": "^8.18.2",
-		"@vscode/test-electron": "^2.4.1",
-		"eslint": "^8.57.1"
+		"@types/node": "^18.19",
+		"@types/vscode": "^1.96",
+		"@typescript-eslint/eslint-plugin": "^8.18",
+		"@typescript-eslint/parser": "^8.18",
+		"@vscode/test-electron": "^2.4",
+		"eslint": "^8.57"
 	}
 }
