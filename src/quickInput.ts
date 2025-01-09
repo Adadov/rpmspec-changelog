@@ -1,12 +1,14 @@
-import { commands, OutputChannel, workspace, window } from 'vscode';
+import * as vs from 'vscode';
+import { commands, window, QuickInput, Event } from 'vscode';
+import { mockBuildTaskProvider } from './mockTaskProvider';
+import { logs } from './extension';
 
-const logs: OutputChannel = window.createOutputChannel("QuickInput", { log: true });
-const settings = workspace.getConfiguration('rpmspecChangelog');
+const settings = vs.workspace.getConfiguration('mock');
 
 export function quickInput() {
-  let oses: string[] = settings.get("mockOses") ?? [];
+  const oses: string[] = settings.get("profils") ?? [];
 
-  if (settings.get('debug')) {
+  if (settings.get('showAllProfils')) {
     oses.push('all');
   }
 
@@ -18,7 +20,9 @@ export function quickInput() {
     if (selection[0]) {
       logs.appendLine(selection[0].label);
       runMock(selection[0].label)
-        .then(() => quickPick.hide())
+        .then(() => {
+          return quickPick.hide();
+        })
         .catch(console.error);
     }
     window.showInformationMessage(`Got: ${selection[0].label}`);
@@ -29,5 +33,34 @@ export function quickInput() {
 }
 
 async function runMock(selection: string) {
-  commands.executeCommand("workbench.action.tasks.runTask", `rpmbuild: Mock: ${selection}`);
+  if (selection === 'all') {
+    logs.appendLine('Running for all profils');
+    const oses: string[] = settings.get("profils") ?? [];
+    for (let i = 0; i < oses.length; i++) {
+      const taskName = mockBuildTaskProvider.getTaskDisplayName(oses[i])
+      commands.executeCommand("workbench.action.tasks.runTask", `${mockBuildTaskProvider.mockBuildScriptType}: ${taskName}`);
+    }
+  } else {
+    const taskName = mockBuildTaskProvider.getTaskDisplayName(selection)
+    commands.executeCommand("workbench.action.tasks.runTask", `${mockBuildTaskProvider.mockBuildScriptType}: ${taskName}`);
+  }
+}
+
+export class mockQuickInput implements QuickInput {
+  title: string | undefined;
+  step: number | undefined;
+  totalSteps: number | undefined;
+  enabled: boolean = true;
+  busy: boolean = false;
+  ignoreFocusOut: boolean = true;
+  onDidHide!: Event<void>;
+  show(): void {
+    throw new Error('Method not implemented.');
+  }
+  hide(): void {
+    throw new Error('Method not implemented.');
+  }
+  dispose(): void {
+    throw new Error('Method not implemented.');
+  }
 }

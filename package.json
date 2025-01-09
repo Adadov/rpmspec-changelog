@@ -19,7 +19,10 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:workbench.action.tasks.runTask"
+		"onCommand:workbench.action.tasks.runTask",
+		"onLanguage:rpmspec",
+		"onLanguage:rpm-spec",
+		"onLanguage"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -30,71 +33,95 @@
 			},
 			{
 				"command": "rpmspecChangelog.runMock",
-				"title": "Mock: Run for ..."
+				"title": "RPM: Run mock for ..."
 			}
 		],
+"configurationDefaults": {},
 		"configuration": {
 			"title": "RPMSpec Changelog",
+"displayName": "SPEC Snippets & Mock",
 			"properties": {
-				"rpmspecChangelog.debug": {
-					"type": "boolean",
-					"description": "Show more logs",
-					"default": false
-				},
-				"rpmspecChangelog.mockOses": {
-					"type": "array",
-					"items": {
-						"type": "string"
-					},
-					"description": "Mock configurations list",
-					"order": 1,
-					"scope": "application"
-				},
-				"rpmspecChangelog.showAll": {
-					"type": "boolean",
-					"description": "All to run mock for all OS at once",
-					"default": false
-				},
 				"rpmspecChangelog.maintainerName": {
+					"title": "Maintainer name",
 					"type": "string",
 					"description": "Use this instead of git config user.name",
-					"order": 2,
-					"scope": "application"
+					"order": 1,
+					"scope": "resource"
 				},
 				"rpmspecChangelog.maintainerEmail": {
 					"type": "string",
 					"description": "Use this instead of git config user.email",
-					"order": 3,
-					"scope": "application"
+					"order": 2,
+					"scope": "resource"
+				},
+				"rpmspecChangelog.logDebug": {
+"order": 3,
+					"type": "boolean",
+					"description": "Show more logs",
+					"default": false,
+					"scope": "resource"
+				},
+				"mock.profils": {
+					"$id": "mock.mockOses",
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+"default": [
+						"fedora-40-x86_64",
+						"fedora-41-x86_64",
+						"fedora-42-x86_64",
+						"alma+epel-8-x86_64",
+						"alma+epel-9-x86_64"
+					],
+					"description": "Mock configurations list",
+					"order": 4,
+					"scope": "resource"
+				},
+				"mock.showAllProfils": {
+"order": 5,
+					"type": "boolean",
+					"description": "All to run mock for all OS at once",
+					"default": true,
+					"scope": "resource"
+				},
+				"mock.repository": {
+					"type": "string",
+					"description": "Project repository URL",
+					"scope": "resource",
+					"order": 6
+				},
+				"mock.repositoryBranch": {
+					"type": "string",
+					"description": "Project repository branch",
+					"scope": "resource",
+					"order": 7
+				},
+				"mock.packageName": {
+					"type": "string",
+					"description": "Package name",
+					"scope": "resource",
+					"order": 8
 				}
 			}
 		},
 		"taskDefinitions": [
 			{
-				"type": "rpmbuild",
+				"type": "RPM",
 				"properties": {
-					"version": {
-						"type": "number",
-						"description": "OS version"
-					},
-					"download": {
+										"download": {
 						"type": "boolean",
 						"default": false,
 						"description": "Download sources"
 					},
 					"type": {
 						"type": "string",
-						"default": "rpmbuild",
+						"default": "rpm",
 						"description": ""
 					},
-					"os": {
+					"name": {
 						"type": "string",
-						"description": "Mock OS configuration (ex: alma+epel)"
-					},
-					"arch": {
-						"type": "string",
-						"default": "x86_64",
-						"description": "Destination arch"
+						"description": "Configuration name (ex: fedora-41-x86_64)"
 					}
 				}
 			}
