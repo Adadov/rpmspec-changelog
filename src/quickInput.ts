@@ -18,14 +18,13 @@ export function quickInput() {
 
   quickPick.onDidChangeSelection(selection => {
     if (selection[0]) {
-      logs.appendLine(selection[0].label);
+
       runMock(selection[0].label)
         .then(() => {
           return quickPick.hide();
         })
         .catch(console.error);
     }
-    window.showInformationMessage(`Got: ${selection[0].label}`);
   });
 
   quickPick.onDidHide(() => quickPick.dispose());
@@ -34,13 +33,16 @@ export function quickInput() {
 
 async function runMock(selection: string) {
   if (selection === 'all') {
+
     logs.appendLine('Running for all profils');
     const oses: string[] = settings.get("profils") ?? [];
+
     for (let i = 0; i < oses.length; i++) {
       const taskName = mockBuildTaskProvider.getTaskDisplayName(oses[i])
       commands.executeCommand("workbench.action.tasks.runTask", `${mockBuildTaskProvider.mockBuildScriptType}: ${taskName}`);
     }
   } else {
+    logs.appendLine('Running for profil '+selection);
     const taskName = mockBuildTaskProvider.getTaskDisplayName(selection)
     commands.executeCommand("workbench.action.tasks.runTask", `${mockBuildTaskProvider.mockBuildScriptType}: ${taskName}`);
   }

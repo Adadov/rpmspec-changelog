@@ -2,6 +2,8 @@ import * as vs from 'vscode';
 import { TaskDefinition, TaskProvider, Task, WorkspaceConfiguration, workspace, ShellExecution, TaskScope } from 'vscode';
 import { logs as logging } from './extension';
 
+const logs: vs.OutputChannel = logging;
+
 interface mockBuildTaskDefinition extends TaskDefinition {
   name: string;
   type: string;
@@ -16,9 +18,7 @@ export class mockBuildTaskProvider implements TaskProvider {
   private mockSettings?: WorkspaceConfiguration;
 
   constructor(private workspaceRoot: string) {
-    const logs = logging
     const self = this;
-
     try {
       if (this.settings?.get('logDebug')) { logs.appendLine("mock.cfg found !!"); }
     } catch (e) {
@@ -28,15 +28,17 @@ export class mockBuildTaskProvider implements TaskProvider {
   }
 
   public async provideTasks(): Promise<Task[]> {
-    const logs = logging
-    logs.appendLine("Initialize mockBuildTaskProvider...");
+    if (this.settings?.get('logDebug')) {
+      let oses: string[] = this.mockSettings?.get("profils") as string[];
+      logs.appendLine("oses: " + oses.join(' '));
+    }
 
     this.settings = vs.workspace.getConfiguration('rpmspecChangelog', null);
     this.mockSettings = vs.workspace.getConfiguration('mock', null);
 
     return this.getTasks();
   }
-
+  
   public resolveTask(_task: Task): Task | undefined {
     const name: string = _task.definition.name;
     return this.getTasks().find((v) => v.name === name);
@@ -55,19 +57,13 @@ export class mockBuildTaskProvider implements TaskProvider {
   }
 
   private getTasks(): Task[] {
-    const logs = logging
-    logs.appendLine("getTasks...");
+    // logs.appendLine("getTasks...");
 
     const settings = this.settings;
 
     this.tasks = [];
 
     let oses: string[] = this.mockSettings?.get("profils") as string[];
-
-    // if (this.settings?.get('logDebug')) {
-    //   logs.appendLine("oses: " + oses.join(' '));
-    // }
-
     if (oses!.length > 0) {
       let cmd: string = "";
       for (let i = 0; i < oses.length; i++) {
@@ -97,10 +93,10 @@ export class mockBuildTaskProvider implements TaskProvider {
   }
 
   private getTaskCmd(config: string): string {
-    const logs = logging
     // let sources = workspace.getWorkspaceFolder(window.activeTextEditor?.document.uri)
+
     let sources = "~/rpmbuild/SOURCES";
-    let cmd: string = `cat $(mock -r ${config} --debug-config-expanded|awk '/config_file/ {print $3}'|tr -d "'") > tmp.cfg;`;
+    let cmd: string = `cat $(mock -q -r ${config} --debug-config-expanded|awk '/config_file/ {print $3}'|tr -d "'") > tmp.cfg;`;
     if (mockBuildTaskProvider.mockFile !== null) {
       cmd += `cat ${mockBuildTaskProvider.mockFile} >> tmp.cfg;`;
     }
